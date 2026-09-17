@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+server/node_modules/
+
+# Secrets — 절대 커밋 금지
+.env
+server/.env
+*.key
+*.pem
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Build/temp
+dist/
+tmp/

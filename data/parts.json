@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "currency": "KRW",
+    "disclaimer": "가격은 참고용 개념 추정치이며 검증되지 않았습니다 (reference not verified). 실제 견적·인증 비용은 포함되지 않았습니다."
+  },
+  "parts": [
+    { "id": "chamber", "name": "방수 세정 챔버/베드 프레임", "category": "구조", "qty": 1, "unitPrice": 1200000, "note": "IPX6 목표 밀폐 구조 (개념)" },
+    { "id": "heater", "name": "인스턴트 온수 히터 + 이중 온도센서", "category": "온수", "qty": 1, "unitPrice": 350000, "note": "41°C 상한 인터록" },
+    { "id": "flowvalve", "name": "유량 제어 밸브 + 노즐 어레이", "category": "온수", "qty": 1, "unitPrice": 180000, "note": "순한 모드 감량 제어" },
+    { "id": "drain", "name": "드레인 펌프 + 역류 방지 트랩", "category": "온수", "qty": 1, "unitPrice": 140000, "note": "배수 막힘 감지 포함" },
+    { "id": "dryer", "name": "저소음 온풍 건조 모듈", "category": "건조", "qty": 1, "unitPrice": 220000, "note": "피부 온도 모니터 연동" },
+    { "id": "lift", "name": "저속 리프트 액추에이터 x2", "category": "체위변경", "qty": 2, "unitPrice": 260000, "note": "토크 리미터/끼임 감지" },
+    { "id": "belt", "name": "안전벨트 + 사이드 레일 세트", "category": "체위변경", "qty": 1, "unitPrice": 90000, "note": "낙상 방지" },
+    { "id": "radar", "name": "비접촉 심박·호흡 레이더 (추정, 데모)", "category": "센서", "qty": 1, "unitPrice": 150000, "note": "진단 목적 아님" },
+    { "id": "irtemp", "name": "IR 체온 센서 (추정)", "category": "센서", "qty": 1, "unitPrice": 45000, "note": "참고값" },
+    { "id": "spo2", "name": "광학 SpO2 센서 (추정, 데모)", "category": "센서", "qty": 1, "unitPrice": 60000, "note": "진단 아님" },
+    { "id": "mat", "name": "압력 매트 + 하중 센서", "category": "센서", "qty": 1, "unitPrice": 120000, "note": "미끄럼·이탈 감지" },
+    { "id": "mcu", "name": "제어 보드 + 안전 MCU (이중화)", "category": "제어", "qty": 1, "unitPrice": 200000, "note": "소프트웨어 이중 감시" },
+    { "id": "estop", "name": "비상정지/보호자 호출 버튼 세트", "category": "안전", "qty": 2, "unitPrice": 35000, "note": "침대측·벽측" },
+    { "id": "rcd", "name": "누전 차단기(GFCI) + 절연 감시", "category": "안전", "qty": 1, "unitPrice": 80000, "note": "방수 환경 필수" },
+    { "id": "ups", "name": "백업 배터리(UPS)", "category": "안전", "qty": 1, "unitPrice": 130000, "note": "정전 시 안전 자세 복귀" }
+  ]
+}

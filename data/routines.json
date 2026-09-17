@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "note": "시뮬레이션/데모용 값입니다. 의료기기 아님. 실제 임상값 아님.",
+    "tempLimitC": 41,
+    "flowMaxLpm": 9
+  },
+  "routines": [
+    {
+      "id": "full-care",
+      "name": "종합 케어 (샤워·건조·체위·바이탈)",
+      "icon": "full",
+      "desc": "자동 세정부터 건조, 체위 변경, 바이탈 확인까지 전체 흐름을 순서대로 진행합니다.",
+      "steps": [
+        { "id": "prep", "name": "준비 및 보호자 확인", "seconds": 20, "tempC": 0, "flowLpm": 0, "gentle": true, "note": "보호자 호출 버튼 위치와 비상정지 확인" },
+        { "id": "prewarm", "name": "예열 및 온도 안정화", "seconds": 25, "tempC": 38, "flowLpm": 2, "gentle": true, "note": "물온도 상한 41°C 인터록 활성" },
+        { "id": "wash", "name": "자동 샤워/세정", "seconds": 90, "tempC": 39, "flowLpm": 7, "gentle": false, "note": "노즐 순차 분사, 미끄럼 감지 상시 동작" },
+        { "id": "rinse", "name": "헹굼", "seconds": 45, "tempC": 38, "flowLpm": 6, "gentle": false, "note": "잔여 세정제 헹굼" },
+        { "id": "dry", "name": "온풍 건조", "seconds": 60, "tempC": 34, "flowLpm": 0, "gentle": true, "note": "저소음 온풍, 피부 온도 모니터" },
+        { "id": "reposition", "name": "체위 변경 (욕창 예방)", "seconds": 30, "tempC": 0, "flowLpm": 0, "gentle": true, "note": "리프트로 완만하게 좌·우 15도 전환" },
+        { "id": "vitals", "name": "바이탈 확인", "seconds": 25, "tempC": 0, "flowLpm": 0, "gentle": true, "note": "심박·체온·호흡·SpO2 추정 (데모)" }
+      ]
+    },
+    {
+      "id": "quick-wash",
+      "name": "간편 세정",
+      "icon": "wash",
+      "desc": "짧은 시간의 부분 세정과 건조로 구성된 경량 루틴입니다.",
+      "steps": [
+        { "id": "prewarm", "name": "예열 및 온도 안정화", "seconds": 20, "tempC": 38, "flowLpm": 2, "gentle": true, "note": "물온도 상한 인터록 활성" },
+        { "id": "wash", "name": "부분 세정", "seconds": 50, "tempC": 39, "flowLpm": 6, "gentle": false, "note": "지정 부위만 분사" },
+        { "id": "dry", "name": "온풍 건조", "seconds": 40, "tempC": 34, "flowLpm": 0, "gentle": true, "note": "저소음 온풍" }
+      ]
+    },
+    {
+      "id": "gentle-night",
+      "name": "야간 순한 케어",
+      "icon": "night",
+      "desc": "수면을 방해하지 않도록 낮은 유량·조용한 모드로 진행하는 야간 루틴입니다.",
+      "steps": [
+        { "id": "prewarm", "name": "저소음 예열", "seconds": 25, "tempC": 37, "flowLpm": 1, "gentle": true, "note": "조명 최소화, 저소음 모드" },
+        { "id": "wash", "name": "순한 세정", "seconds": 60, "tempC": 38, "flowLpm": 4, "gentle": true, "note": "낮은 유량, 부드러운 분사" },
+        { "id": "dry", "name": "저소음 건조", "seconds": 45, "tempC": 33, "flowLpm": 0, "gentle": true, "note": "저소음 온풍" },
+        { "id": "reposition", "name": "야간 체위 변경", "seconds": 30, "tempC": 0, "flowLpm": 0, "gentle": true, "note": "완만한 각도 변경으로 욕창 예방" }
+      ]
+    },
+    {
+      "id": "reposition-only",
+      "name": "체위 변경 전용 (욕창 예방)",
+      "icon": "reposition",
+      "desc": "세정 없이 정기적인 체위 변경과 바이탈 확인만 수행합니다.",
+      "steps": [
+        { "id": "prep", "name": "준비 및 보호자 확인", "seconds": 15, "tempC": 0, "flowLpm": 0, "gentle": true, "note": "리프트 안전벨트 확인" },
+        { "id": "reposition", "name": "체위 변경", "seconds": 40, "tempC": 0, "flowLpm": 0, "gentle": true, "note": "좌·우·상체 각도 순차 전환" },
+        { "id": "vitals", "name": "바이탈 확인", "seconds": 25, "tempC": 0, "flowLpm": 0, "gentle": true, "note": "심박·체온·호흡·SpO2 추정 (데모)" }
+      ]
+    }
+  ]
+}
