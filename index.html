@@ -54,6 +54,14 @@
   <main id="main" class="wrap">
     <div id="app">
 
+      <!-- 무인 자동 다이제스트: 페이지 로드 시 자동 생성되는 오늘의 돌봄 팁 -->
+      <section id="daily-tip" class="card daily-tip" aria-labelledby="daily-tip-title">
+        <h2 id="daily-tip-title">💡 오늘의 돌봄 팁 <span class="pill">자동 생성 · 참고용</span></h2>
+        <p class="muted">페이지를 열면 욕창 예방·수분·피부 관리 중 오늘의 주제를 자동으로 골라 팁을 보여줍니다 (오프라인 Mock 에서도 동작).</p>
+        <div id="daily-tip-out" class="ai-log" aria-live="polite">준비 중…</div>
+        <p class="warn-text"><strong>⚠️ 참고용 일반 정보이며 의료 조언·진단이 아닙니다. 증상이 지속·악화되면 의료 전문가와 상담하세요.</strong></p>
+      </section>
+
       <!-- 인터랙티브 케어 워크플로우 시뮬레이터 -->
       <section id="simulator" class="card">
         <h2>인터랙티브 케어 워크플로우 시뮬레이터</h2>

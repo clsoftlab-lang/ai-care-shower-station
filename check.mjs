@@ -122,6 +122,13 @@ const ai = await import("./ai/ai.js");
   const alert = ai.mockProvider("alert", { vitals: { hr: 200, tempC: 40, resp: 40, spo2: 70 } });
   assert(/진단/.test(alert) && /의료 조언이 아닙니다/.test(alert), "alert mock 진단 금지+면책");
   assert(!/진단합니다|진단됨|질병명/.test(alert), "alert mock 진단 주장 없음");
+
+  // 무인 자동 다이제스트 (오늘의 돌봄 팁)
+  const digestA = ai.mockProvider("digest", { topic: "욕창 예방", context: { routineName: routine.name } });
+  const digestB = ai.mockProvider("digest", { topic: "욕창 예방", context: { routineName: routine.name } });
+  assert(digestA === digestB, "digest mock 결정론");
+  assert(/오늘의 돌봄 팁/.test(digestA), "digest mock 제목 포함");
+  assert(/의료 조언이 아닙니다/.test(digestA), "digest mock 의료 면책 포함");
 }
 
 // ---------- 6) 보안: AI_ENDPOINT 비어있음 + 실제 키 없음 ----------
@@ -132,7 +139,8 @@ assert(/export\s+const\s+AI_ENDPOINT\s*=\s*""/.test(cfg), "AI_ENDPOINT 빈 문�
 const browserRepoFiles = jsFiles
   .filter((p) => !p.includes(`server${sep()}`))
   .concat([join(ROOT, "index.html")]);
-const keyRe = /sk-ant-[A-Za-z0-9_-]{20,}/;
+// 문자열 결합으로 구성 → README 등의 sk-ant… 언급이 이 소스에서 오탐되지 않도록.
+const keyRe = new RegExp("sk-" + "ant-[A-Za-z0-9_-]{20,}");
 let leak = null;
 for (const p of browserRepoFiles.concat(dataFiles.map((f) => join(ROOT, "data", f)))) {
   const txt = readFileSync(p, "utf8");
@@ -142,6 +150,10 @@ assert(leak === null, "브라우저/리포지토리에 실제 키(sk-ant+20자) 
 // .env.example 의 placeholder 는 실제 키 형식이 아니어야 함
 const envEx = readFileSync(join(ROOT, "server", ".env.example"), "utf8");
 assert(!keyRe.test(envEx), ".env.example 는 실제 키 형식 아님(placeholder)");
+// .gitignore 가 .env 를 제외하는지 확인
+const gitignore = readFileSync(join(ROOT, ".gitignore"), "utf8");
+assert(/(^|\n)\.env(\s|$)/.test(gitignore) || /(^|\n)server\/\.env(\s|$)/.test(gitignore),
+  ".gitignore 가 .env 제외");
 
 // ---------- 결과 ----------
 console.log(`\n결과: ${pass} PASS / ${fail} FAIL`);

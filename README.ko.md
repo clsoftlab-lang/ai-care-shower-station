@@ -64,12 +64,38 @@ AI 기능 3종, **모두 "의료 조언 아님" 라벨 부착**:
 
 **실제 Claude** 를 켜려면:
 
-1. [`server/`](./server/) 의 프록시 실행 (`@anthropic-ai/sdk`, 모델 **`claude-opus-5`**).
+1. [`server/`](./server/) 의 프록시 실행 (`@anthropic-ai/sdk`, 비용 우선 기본 모델
+   **`claude-haiku-4-5`**, `AI_MODEL` 로 상향 가능).
 2. **`ANTHROPIC_API_KEY`** 를 **서버 환경변수로만** 설정.
 3. [`ai/config.js`](./ai/config.js) 의 `AI_ENDPOINT` 에 프록시 URL 지정.
 
 > **🔐 키는 서버에서만 사용합니다. 절대 브라우저나 저장소에 API 키를 넣지 마세요.**
 > Mock 데모는 키가 전혀 없어도 동작합니다.
+
+## ⚙️ 고도화 — 무인·저비용 실 AI 연동
+
+이 프로젝트는 이제 **저비용·무인·실 Claude** 고도화를 포함합니다.
+
+- **비용 우선 모델** — 기본 **`claude-haiku-4-5`** (대략 **$1 / $5 per MTok** 입력/출력),
+  `AI_MODEL` 로 교체 가능 (`claude-sonnet-5` / `claude-opus-5` 로 상향).
+- **Prompt caching** — 안정적인 태스크별 system 프롬프트를 `cache_control` 블록으로 전송해
+  반복 호출 시 캐시 히트로 비용 절감.
+- **출력 상한** — 태스크별 modest `max_tokens`(기본 ~700).
+- **비용 가드레일** — IP 당 분당 요청 제한(~20/분) + 월 토큰 예산
+  (`AI_MONTHLY_TOKEN_CAP`, 기본 2,000,000). 초과 시 HTTP 429 `{fallback:true}` 응답.
+- **대략 비용** — Haiku 4.5 기준 요청당 출력 ~700 + 입력 ~300 토큰이면
+  **1,000 요청 ≈ 입력 $0.30 + 출력 $3.50 ≈ 약 $4 미만** (prompt caching 으로 입력 비용은 더 감소).
+  상위 모델은 비례해 증가합니다.
+- **무인** — 무료 **Cloudflare Workers** 원클릭 배포
+  ([`server/worker.js`](./server/worker.js) + [`server/wrangler.toml`](./server/wrangler.toml)):
+  관리할 서버가 없습니다. `wrangler secret put ANTHROPIC_API_KEY` 후 `wrangler deploy`.
+- **절대 멈추지 않음** — 엔드포인트 실패 / 429 / 네트워크 오류 시 브라우저가
+  **자동으로 결정론적 Mock 으로 폴백**하여 무인 상태에서도 앱이 계속 동작합니다.
+- **로드 시 자동 다이제스트** — 페이지를 열면 "**오늘의 돌봄 팁 (욕창예방·수분·피부관리)**"
+  카드가 케어 엔진 + `askAI` 로 자동 생성됩니다 (오프라인 Mock 에서도 동작).
+
+> **🔐 API 키는 서버에서만 — 브라우저나 리포지토리에는 절대 넣지 않습니다.**
+> 모든 AI 출력은 참고용 일반 정보이며 의료 조언·진단이 아닙니다.
 
 ## 프로젝트 구조
 

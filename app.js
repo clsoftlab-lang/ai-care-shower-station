@@ -51,6 +51,30 @@ async function init() {
   wireCareLog();
   wireAI();
   onRoutineChange();
+  loadDailyTip(); // 무인 자동 다이제스트 (오늘의 돌봄 팁)
+}
+
+// ---------- 무인 자동 다이제스트: 오늘의 돌봄 팁 ----------
+// 페이지 로드 시 날짜 기반으로 주제를 골라 askAI 로 자동 생성합니다.
+// AI_ENDPOINT 가 비어 있으면 Mock 으로, 실 엔드포인트 실패 시에도 Mock 으로 폴백합니다.
+async function loadDailyTip() {
+  const out = $("daily-tip-out");
+  if (!out) return;
+  const topics = ["욕창 예방", "수분 관리", "피부 관리"];
+  const dayIndex = Math.floor(Date.now() / 86400000); // 날짜(UTC일) 기반 회전
+  const topic = topics[dayIndex % topics.length];
+  // 케어 루틴 정보를 컨텍스트로 함께 전달 (via care routines).
+  const routineName = state.current ? state.current.name : (state.routines[0] && state.routines[0].name);
+  out.textContent = "";
+  try {
+    await askAI(
+      "digest",
+      { topic, context: { routineName } },
+      { onToken: (t) => { out.textContent += t; out.scrollTop = out.scrollHeight; } }
+    );
+  } catch (e) {
+    out.textContent = "팁을 불러오지 못했습니다: " + (e.message || e);
+  }
 }
 
 async function loadData() {

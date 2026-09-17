@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 CLSOFTLAB (씨엘소프트랩), Dr. Lee Il-guk (이일국)
+#
+# Cloudflare Workers 배포 설정 (무료 티어 · 무인 운영).
+# 키는 시크릿으로만 설정하세요 (리포지토리/토글에 넣지 말 것):
+#   wrangler secret put ANTHROPIC_API_KEY
+
+name = "ai-care-station-ai"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+# 비-시크릿 설정 값 (키는 절대 여기에 넣지 마세요).
+[vars]
+AI_MODEL = "claude-haiku-4-5"     # 상향 가능: claude-sonnet-5 / claude-opus-5
+AI_EFFORT = "low"                  # Haiku 가 아닐 때만 적용
+AI_MONTHLY_TOKEN_CAP = "2000000"  # 월 토큰 예산 (초과 시 429 {fallback:true})
+CORS_ORIGIN = "https://clsoftlab-lang.github.io"

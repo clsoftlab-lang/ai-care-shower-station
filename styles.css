@@ -100,6 +100,7 @@ main { padding: 20px 16px 60px; }
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; margin: 18px 0; }
 .card h2 { margin-top: 0; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .card h3 { font-size: 1.02rem; margin: 14px 0 8px; }
+.daily-tip { border-left: 4px solid var(--accent, #2f7d6b); }
 .muted { color: var(--muted); font-size: 0.9rem; }
 .warn-text { color: var(--warn); }
 .pill { font-size: 0.7rem; background: var(--surface-2); border: 1px solid var(--border); color: var(--muted); padding: 3px 8px; border-radius: 20px; font-weight: 600; }

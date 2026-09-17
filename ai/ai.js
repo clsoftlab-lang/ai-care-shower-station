@@ -15,18 +15,29 @@ const MED_DISCLAIMER =
   "⚠️ 이 안내는 참고용이며 의료 조언이 아닙니다. 진단이 아니며, 증상이 지속·악화되면 의료 전문가와 상담하거나 응급 연락처로 연락하세요.";
 
 /**
- * @param {"chat"|"routine"|"alert"} task
+ * @param {"chat"|"routine"|"alert"|"digest"} task
  * @param {object} payload
  * @param {{onToken?: (t:string)=>void}} [opts]
  * @returns {Promise<string>}
  */
 export async function askAI(task, payload = {}, { onToken } = {}) {
   if (!AI_ENDPOINT) {
-    const text = mockProvider(task, payload);
-    if (onToken) await streamLocal(text, onToken);
-    return text;
+    return runMock(task, payload, onToken);
   }
-  return realProvider(task, payload, onToken);
+  // 무인(never-breaks): 실 엔드포인트 실패 / 429 {fallback:true} / 네트워크 오류 시
+  // 자동으로 Mock 으로 폴백해 앱이 절대 멈추지 않게 합니다.
+  try {
+    return await realProvider(task, payload, onToken);
+  } catch (_) {
+    return runMock(task, payload, onToken);
+  }
+}
+
+/** Mock 실행 (+ 선택적 로컬 스트리밍) */
+async function runMock(task, payload, onToken) {
+  const text = mockProvider(task, payload);
+  if (onToken) await streamLocal(text, onToken);
+  return text;
 }
 
 /** 로컬 스트리밍 흉내 (Mock) */
@@ -38,13 +49,15 @@ async function streamLocal(text, onToken) {
   }
 }
 
-/** 서버 프록시 호출 + 스트림 파싱 */
+/** 서버 프록시 호출 + 스트림 파싱 (실패 시 throw → askAI 가 Mock 으로 폴백) */
 async function realProvider(task, payload, onToken) {
   const res = await fetch(AI_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ task, payload }),
   });
+  // 429 {fallback:true} (비용 한도 초과) → 폴백 신호. 그 외 오류도 throw.
+  if (res.status === 429) throw new Error("AI 한도 초과 → Mock 폴백");
   if (!res.ok) throw new Error(`AI 서버 오류: ${res.status}`);
   if (!onToken || !res.body) {
     const data = await res.json().catch(() => null);
@@ -73,7 +86,24 @@ export function mockProvider(task, payload = {}) {
   if (task === "chat") return mockChat(payload);
   if (task === "routine") return mockRoutine(payload);
   if (task === "alert") return mockAlert(payload);
+  if (task === "digest") return mockDigest(payload);
   return `요청을 이해하지 못했습니다.\n\n${MED_DISCLAIMER}`;
+}
+
+/**
+ * 오늘의 돌봄 팁 (무인 자동 다이제스트). chat mock 을 재사용하며
+ * 케어 루틴 정보로 추천 루틴을 덧붙입니다. 오프라인(Mock)에서도 동작합니다.
+ */
+function mockDigest(payload) {
+  const topic = String(payload.topic || "").trim();
+  const tip = mockChat({ question: topic || "돌봄 일반 팁" });
+  const routineName = payload.context && payload.context.routineName;
+  const rec = routineName
+    ? `\n\n오늘 추천 루틴: ${routineName} — 시뮬레이터에서 실행해 볼 수 있어요.`
+    : "";
+  const heading = topic ? `오늘의 돌봄 팁 · ${topic}` : "오늘의 돌봄 팁";
+  // mockChat 이 이미 면책을 포함하므로 heading 만 앞에 붙입니다.
+  return `【${heading}】\n${tip}${rec}`;
 }
 
 function mockChat(payload) {
